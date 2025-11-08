@@ -1,0 +1,103 @@
+.utility-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 18px;
+  width: 100%;
+  max-width: 1280px;
+  box-sizing: border-box;
+}
+
+/* left area: search + sort */
+.ub-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* make search take remaining space inside .ub-left */
+.ub-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* new: let the search box grow to fill ub-left */
+.ub-search {
+  flex: 1 1 auto;
+  min-width: 0; /* allow input to shrink on small screens */
+}
+
+.ub-search input {
+  width: 100%; /* fill the flexible container */
+  max-width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(16,24,40,0.06);
+  font-size: 14px;
+  outline: none;
+  transition: box-shadow .12s ease, border-color .12s ease;
+}
+.ub-search input:focus {
+  box-shadow: 0 8px 30px rgba(11,92,255,0.06);
+  border-color: rgba(11,92,255,0.16);
+}
+
+/* sort select */
+.ub-sort {
+  flex: 0 0 auto; /* keep sort select compact */
+}
+
+.ub-sort select {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(16,24,40,0.06);
+  font-size: 14px;
+}
+
+/* right area: stats + actions */
+.ub-right {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.ub-stats {
+  color: white;
+  font-size: 13px;
+}
+
+/* buttons */
+.ub-btn {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid rgba(16,24,40,0.06);
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform .08s ease, background .12s ease;
+}
+.ub-btn:hover { transform: translateY(-2px); background: rgba(11,92,255,0.04); }
+
+.ub-btn.primary {
+  background: linear-gradient(90deg,#0b5cff,#7c4dff);
+  color: #fff;
+  border: none;
+  box-shadow: 0 8px 24px rgba(11,92,255,0.08);
+}
+.ub-btn.primary:hover { transform: translateY(-2px) scale(1.02); }
+
+/* responsive tweaks */
+@media (max-width: 880px) {
+  .utility-bar { flex-direction: column; align-items: stretch; gap: 12px; }
+  .ub-left { flex-direction: column; align-items: stretch; gap: 8px; }
+  .ub-right { gap: 6px; }
+  .ub-search input { width: 100%; max-width: 100%; }
+}

@@ -3,7 +3,7 @@ import { FaPlay, FaPause, FaClock, FaScroll, FaRegCopy, FaTrash } from "react-ic
 import { useRecordingStore } from "../stores/recordingStore";
 import "../styles/recordingPlayer.css";
 
-const RecordingPlayer = ({ recording, onDelete }) => {
+const RecordingPlayer = ({ recording, onDelete, isCompact = false}) => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -152,6 +152,7 @@ const RecordingPlayer = ({ recording, onDelete }) => {
     console.warn("No delete handler available for recording id:", recording.id, "- dispatched app:delete-recording");
   };
 
+  if (!isCompact)
   return (
     <div className="rp-card">
       <div className="rp-main">

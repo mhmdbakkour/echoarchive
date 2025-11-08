@@ -12,11 +12,6 @@
 
 /* Card for each archive item */
 .archive-item {
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg,#ffffff,#fbfdff);
-  border: 1px solid rgba(16,24,40,0.06);
-  border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(11,92,255,0.04);
   transition: transform .12s ease, box-shadow .12s ease;
