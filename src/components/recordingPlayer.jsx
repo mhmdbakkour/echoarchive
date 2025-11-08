@@ -1,9 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FaPlay, FaPause, FaClock, FaScroll, FaRegCopy, FaTrash } from "react-icons/fa6";
+import {
+  FaPlay,
+  FaPause,
+  FaClock,
+  FaScroll,
+  FaRegCopy,
+  FaTrash,
+} from "react-icons/fa6";
 import { useRecordingStore } from "../stores/recordingStore";
 import "../styles/recordingPlayer.css";
 
-const RecordingPlayer = ({ recording, onDelete, isCompact = false}) => {
+const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -19,7 +26,10 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false}) => {
     audioRef.current = audio;
 
     // prefer stored duration, otherwise listen for metadata
-    if (typeof recording?.duration === "number" && isFinite(recording.duration)) {
+    if (
+      typeof recording?.duration === "number" &&
+      isFinite(recording.duration)
+    ) {
       setDuration(recording.duration);
     } else if (isFinite(audio.duration) && audio.duration > 0) {
       setDuration(audio.duration);
@@ -45,7 +55,9 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false}) => {
     audio.addEventListener("ended", handleEnded);
 
     // ensure the element is in a ready state (harmless if already loaded)
-    try { audio.load(); } catch (e) {}
+    try {
+      audio.load();
+    } catch (e) {}
 
     return () => {
       audio.removeEventListener("loadedmetadata", onMeta);
@@ -103,7 +115,9 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false}) => {
     return `${m}:${s}`;
   };
 
-  const createdAt = recording?.createdAt ? new Date(recording.createdAt).toLocaleString() : "";
+  const createdAt = recording?.createdAt
+    ? new Date(recording.createdAt).toLocaleString()
+    : "";
 
   const copyTranscript = async () => {
     const t = recording?.transcript || "";
@@ -113,6 +127,20 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false}) => {
       console.warn("Copy failed", e);
     }
   };
+
+  const sentiment = recording?.sentiment || null;
+  // simple, robust sentiment values for the compact emoji badge + tooltip
+  const sentimentEmoji = (() => {
+    if (!sentiment) return "❔";
+    const lbl = String(sentiment.label || "").toLowerCase();
+    const score = Number.isFinite(sentiment.score) ? sentiment.score : 0;
+    if (lbl === "positive") return score > 10 ? "🤩" : "😊";
+    if (lbl === "negative") return score < -10 ? "😡" : "☹️";
+    return "😐";
+  })();
+  const sentimentTitle = sentiment
+    ? `${sentiment.label} (${sentiment.score})`
+    : "No sentiment";
 
   // try to use store removeRecording if caller doesn't provide onDelete
   const removeRecording = useRecordingStore((s) => s.removeRecording);
@@ -136,9 +164,10 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false}) => {
 
     // 3) try direct store access (works for Zustand stores exported as a hook)
     try {
-      const direct = typeof useRecordingStore.getState === "function"
-        ? useRecordingStore.getState().removeRecording
-        : undefined;
+      const direct =
+        typeof useRecordingStore.getState === "function"
+          ? useRecordingStore.getState().removeRecording
+          : undefined;
       if (typeof direct === "function") {
         direct(recording.id);
         return;
@@ -148,84 +177,115 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false}) => {
     }
 
     // 4) final fallback: emit an event so parent/container can handle deletion
-    window.dispatchEvent(new CustomEvent("app:delete-recording", { detail: { id: recording.id } }));
-    console.warn("No delete handler available for recording id:", recording.id, "- dispatched app:delete-recording");
+    window.dispatchEvent(
+      new CustomEvent("app:delete-recording", { detail: { id: recording.id } })
+    );
+    console.warn(
+      "No delete handler available for recording id:",
+      recording.id,
+      "- dispatched app:delete-recording"
+    );
   };
 
   if (!isCompact)
-  return (
-    <div className="rp-card">
-      <div className="rp-main">
-        <button
-          className={`rp-play ${isPlaying ? "playing" : ""}`}
-          onClick={togglePlayback}
-          aria-label={isPlaying ? "Pause" : "Play"}
-        >
-          {isPlaying ? <FaPause /> : <FaPlay />}
-        </button>
-
-        <div className="rp-meta">
-          <div className="rp-row">
-            <strong className="rp-title">Recording</strong>
-            <div className="rp-time">
-              <FaClock /> <span className="rp-created">{createdAt}</span>
-            </div>
-          </div>
-
-          <div
-            className="rp-progress"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(progress)}
-            onClick={seek}
-            title="Click to seek"
+    return (
+      <div className="rp-card">
+        <div className="rp-main">
+          <button
+            className={`rp-play ${isPlaying ? "playing" : ""}`}
+            onClick={togglePlayback}
+            aria-label={isPlaying ? "Pause" : "Play"}
           >
-            <div className="rp-progress-bar" style={{ width: `${progress}%` }} />
-          </div>
+            {isPlaying ? <FaPause /> : <FaPlay />}
+          </button>
 
-          <div className="rp-controls-row">
-            <div className="rp-duration">
-              <span className="rp-current">
-                {audioRef.current ? formatDuration((audioRef.current.currentTime || 0)) : "0:00"}
-              </span>
-              <span className="rp-divider">/</span>
-              <span className="rp-total">{duration ? formatDuration(duration) : "..."}</span>
+          <div className="rp-meta">
+            <div className="rp-row">
+              <strong className="rp-title">Recording</strong>
+              <div className="rp-time">
+                <FaClock /> <span className="rp-created">{createdAt}</span>
+              </div>
             </div>
 
-            <div className="rp-actions">
-              <button
-                className={`rp-transcript-toggle ${showTranscript ? "open" : ""}`}
-                onClick={() => setShowTranscript((s) => !s)}
-                aria-expanded={showTranscript}
-                title="Toggle transcript"
-              >
-                <FaScroll />
-              </button>
+            <div
+              className="rp-progress"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress)}
+              onClick={seek}
+              title="Click to seek"
+            >
+              <div
+                className="rp-progress-bar"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
 
-              <button className="rp-copy" onClick={copyTranscript} title="Copy transcript">
-                <FaRegCopy />
-              </button>
+            <div className="rp-controls-row">
+              <div className="rp-duration">
+                <span className="rp-current">
+                  {audioRef.current
+                    ? formatDuration(audioRef.current.currentTime || 0)
+                    : "0:00"}
+                </span>
+                <span className="rp-divider">/</span>
+                <span className="rp-total">
+                  {duration ? formatDuration(duration) : "..."}
+                </span>
+              </div>
 
-              <button className="rp-delete" onClick={handleDelete} title="Delete recording" aria-label="Delete recording">
-                <FaTrash />
-              </button>
+              <div className="rp-actions">
+                <span
+                  className={`rp-sentiment-mini ${sentiment.label.toLowerCase() || ""}`}
+                  title={sentimentTitle}
+                  aria-hidden="true"
+                >
+                  {sentimentEmoji}
+                </span>
+                <button
+                  className={`rp-transcript-toggle ${
+                    showTranscript ? "open" : ""
+                  }`}
+                  onClick={() => setShowTranscript((s) => !s)}
+                  aria-expanded={showTranscript}
+                  title="Toggle transcript"
+                >
+                  <FaScroll />
+                </button>
+
+                <button
+                  className="rp-copy"
+                  onClick={copyTranscript}
+                  title="Copy transcript"
+                >
+                  <FaRegCopy />
+                </button>
+
+                <button
+                  className="rp-delete"
+                  onClick={handleDelete}
+                  title="Delete recording"
+                  aria-label="Delete recording"
+                >
+                  <FaTrash />
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className={`rp-transcript ${showTranscript ? "visible" : ""}`}>
-        <div className="rp-transcript-inner">
-          {recording?.transcript ? (
-            <p>"{recording.transcript}"</p>
-          ) : (
-            <p className="rp-muted">No transcript available</p>
-          )}
+        <div className={`rp-transcript ${showTranscript ? "visible" : ""}`}>
+          <div className="rp-transcript-inner">
+            {recording?.transcript ? (
+              <p>"{recording.transcript}"</p>
+            ) : (
+              <p className="rp-muted">No transcript available</p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default RecordingPlayer;

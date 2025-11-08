@@ -240,3 +240,30 @@
   height: 16px;
   display: block;
 }
+
+/* Minimal sentiment emoji next to play (keeps UI compact) */
+.rp-sentiment-mini {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  margin-right: 6px;
+  background: #f0f2f5;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(2,6,23,0.06);
+  border: 1px solid rgba(15,23,36,0.06);
+  font-size: 22px;
+  line-height: 1;
+  color: inherit;
+}
+
+.rp-sentiment-mini.positive:hover { background: #16a34a;}
+.rp-sentiment-mini.negative:hover { background: #ef4444; }
+.rp-sentiment-mini.neutral:hover { background: #94a3b8; } 
+.rp-sentiment-mini.unknown:hover { background: rgba(99,102,241,0.24); }
+
+/* keep layout tight on small screens */
+@media (max-width: 640px) {
+  .rp-sentiment-mini { width: 24px; height: 24px; font-size: 14px; margin-left: 8px; }
+}

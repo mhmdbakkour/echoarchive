@@ -59,16 +59,15 @@
   transition: height 0.3s ease;
 }
 
-
 .live-transcript{
-  display: none;
-}
-
-.live-transcript.active{
   display: block;
   margin-top: 10px;
   max-width: 720px; /* requirement #2: constrain width */
   width: 100%;
+}
+
+.live-transcript.hidden{
+  display: none;
 }
 
 .live-transcript-inner{
@@ -132,4 +131,87 @@
   color: #6b7280;
   font-style: italic;
   margin: 0;
+}
+
+/* Sentiment badge near timer */
+.recording-sentiment {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #fff;
+  background: rgba(99,102,241,0.6);
+  vertical-align: middle;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Emoji sizing and spacing */
+.recording-sentiment .sentiment-emoji {
+  font-size: 18px;
+  line-height: 1;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.sentiment-emoji{
+  background-color: white;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+/* Label styling (keeps same color scheme but smaller text) */
+.recording-sentiment .sentiment-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: inherit;
+}
+
+/* color variants */
+.recording-sentiment.positive { background: linear-gradient(90deg,#16a34a,#4ade80); color: #07220a; }
+.recording-sentiment.neutral { background: linear-gradient(90deg,#94a3b8,#c7d2fe); color: #071245; }
+.recording-sentiment.negative { background: linear-gradient(90deg,#ef4444,#fb7185); color: #3b0505; }
+.recording-sentiment.unknown { background: rgba(99,102,241,0.24); color: #111827; color: #fff}
+
+/* responsive / layout tweaks */
+@media (max-width: 640px) {
+  .recording-sentiment { display: inline-flex; margin-left: 0; margin-top: 8px; }
+  .recording-sentiment .sentiment-emoji { font-size: 16px; }
+  .recording-sentiment .sentiment-label { font-size: 12px; }
+}
+
+/* Make sentiment emoji sit on its own white circle so it never blends with the badge background */
+.recording-sentiment .sentiment-emoji,
+.sentiment-emoji {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  background: #ffffff;
+  border-radius: 50%;
+  padding: 0;
+  box-shadow: 0 2px 6px rgba(2,6,23,0.08);
+  border: 1px solid rgba(15,23,36,0.06);
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* ensure emoji glyph centers and scales nicely */
+.recording-sentiment .sentiment-emoji > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  line-height: 28px;
+}
+
+.recording-sentiment.hidden{
+  display: none;
+}
+
+.sentiment-emoji.hidden{
+  display: none;
 }

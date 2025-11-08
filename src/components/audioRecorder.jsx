@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import Sentiment from "sentiment";
 import { FaMicrophone, FaMicrophoneSlash, FaCirclePause, FaCirclePlay} from "react-icons/fa6";
 import { useRecordingStore } from "../stores/recordingStore";
 import { Recording } from "../utils/Recording";
@@ -13,7 +14,12 @@ const AudioRecorder = () => {
   const transcriptRef = useRef("");
   const [liveTranscript, setLiveTranscript] = useState("");
   const transcriptContainerRef = useRef(null); // added: ref for scrolling
+  const autoStopTimeoutRef = useRef(null); // ensure auto-stop timer ref exists
   const addRecording = useRecordingStore((state) => state.addRecording);
+
+  // sentiment analyzer + live state
+  const sentimentAnalyzerRef = useRef(new Sentiment());
+  const [sentiment, setSentiment] = useState(null); // { score, comparative, label } or null
 
   // new: timer state and refs
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -42,7 +48,18 @@ const AudioRecorder = () => {
           interim += result[0].transcript;
         }
       }
-      setLiveTranscript((transcriptRef.current + interim).trim());
+      const text = (transcriptRef.current + interim).trim();
+      setLiveTranscript(text);
+
+      // update live sentiment each time results arrive
+      try {
+        const analysis = sentimentAnalyzerRef.current.analyze(text || "");
+        const label =
+          analysis.score > 1 ? "Positive" : analysis.score < -1 ? "Negative" : "Neutral";
+        setSentiment({ score: analysis.score, comparative: analysis.comparative, label });
+      } catch (err) {
+        console.warn("Sentiment analysis failed:", err);
+      }
     };
 
     rec.onerror = (err) => {
@@ -135,13 +152,25 @@ const AudioRecorder = () => {
       audioChunks.current = [];
       transcriptRef.current = "";
       setLiveTranscript("");
+     setSentiment(null);
 
       recorder.ondataavailable = (e) => audioChunks.current.push(e.data);
 
       recorder.onstop = async () => {
         const blob = new Blob(audioChunks.current, { type: "audio/webm" });
         const transcript = transcriptRef.current.trim();
-        const newRecording = await Recording.fromBlob(blob, [], transcript);
+        // compute final sentiment for the saved recording
+        let finalSentiment = sentiment;
+        try {
+          const analysis = sentimentAnalyzerRef.current.analyze(transcript || "");
+          const label =
+            analysis.score > 1 ? "Positive" : analysis.score < -1 ? "Negative" : "Neutral";
+          finalSentiment = { score: analysis.score, comparative: analysis.comparative, label };
+        } catch (err) {
+          console.warn("Final sentiment analysis failed:", err);
+        }
+
+        const newRecording = await Recording.fromBlob(blob, [], transcript, finalSentiment);
         addRecording(newRecording);
         stream.getTracks().forEach((t) => t.stop());
         // leave elapsedSeconds as final value (optional: reset here)
@@ -163,7 +192,11 @@ const AudioRecorder = () => {
       // start recognition AFTER recorder.start()
       startRecognitionIfAvailable();
 
-      setTimeout(() => stopRecording(), 120000);
+      // schedule auto-stop (existing logic you have elsewhere can be used)
+      if (autoStopTimeoutRef?.current) clearTimeout(autoStopTimeoutRef.current);
+      autoStopTimeoutRef.current = setTimeout(() => {
+        if (isRecordingRef.current) stopRecording();
+      }, 120000);
     } catch (error) {
       console.error("Error accessing microphone:", error);
     }
@@ -175,6 +208,7 @@ const AudioRecorder = () => {
     stopRecognitionIfRunning();
 
     setLiveTranscript("");
+    setSentiment(null);
 
     // stop and clear timer
     if (timerRef.current) {
@@ -226,8 +260,29 @@ const AudioRecorder = () => {
       </button>
 
       <span className={`recording-timer${recording ? " recording" : ""}`}>{formatDuration(elapsedSeconds)}</span>
+      <span
+        className={`recording-sentiment ${sentiment ? sentiment.label.toLowerCase() : "unknown"} ${recording ? "" : "hidden"}`}
+        title={sentiment ? `${sentiment.label} (${sentiment.score})` : "No sentiment"}
+      >
+        <span className={`sentiment-emoji ${recording ? "" : "hidden"}`} aria-hidden="true">
+          {sentiment
+            ? sentiment.score > 1
+              ? sentiment.score < 20
+                ? "😊"
+                : "🤩"
+              : sentiment.score < -1
+              ? sentiment.score > -20
+                ? "☹️"
+                : "😡"
+              : "😐"
+            : "❔"}
+        </span>
+        <span className="sentiment-label">
+          {sentiment ? `${sentiment.label} (${sentiment.score})` : "No sentiment"}
+        </span>
+      </span>
 
-      <div className={`live-transcript${recording ? " active" : ""}`}>
+      <div className={`live-transcript ${recording ? "" : "hidden"}`}>
         <div
           className="live-transcript-inner"
           ref={transcriptContainerRef}

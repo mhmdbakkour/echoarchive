@@ -1,15 +1,16 @@
 export class Recording {
-  constructor(blob, tags = [], transcript = '', audio = null, duration = 0) {
+  constructor(blob, tags = [], transcript = '', audio = null, duration = 0, sentiment = null) {
     this.id = crypto.randomUUID();
     this.blob = blob;
     this.tags = tags;
     this.transcript = transcript;
+    this.sentiment = sentiment;
     this.audio = audio;
     this.duration = duration; // seconds (number)
     this.createdAt = Date.now();
   }
 
-  static async fromBlob(blob, tags = [], transcript = '') {
+  static async fromBlob(blob, tags = [], transcript = '', sentiment = null) {
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
     audio.preload = 'metadata';
@@ -39,6 +40,6 @@ export class Recording {
       }
     }
 
-    return new Recording(blob, tags, transcript, audio, duration || 0);
+    return new Recording(blob, tags, transcript, audio, duration || 0, sentiment);
   }
 }
