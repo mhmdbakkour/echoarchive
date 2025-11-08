@@ -4,6 +4,7 @@ import RecordingList from "../components/recordingList";
 
 const Record = () => {
     return <>
+    <h1>Record yourself</h1>
     <AudioRecorder/>
     <RecordingList/>
     </>
