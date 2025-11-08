@@ -1,0 +1,135 @@
+.recorder-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.toggle-recording-button {
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  transition: background 0.2s ease, scale 0.1s ease;
+}
+
+.toggle-recording-button:hover {
+  background: #ff36b2;
+  scale: 1.1;
+}
+
+.toggle-recording-button.recording {
+  background: #199229;
+}
+
+.toggle-recording-button.recording:hover{
+  background-color: red;
+}
+
+.recording-timer {
+  display: none;
+}
+
+.recording-timer.recording{
+  display: block;
+  font-size: 1.2rem;
+  color: white;
+  background-color: #1f1f1f;
+  border-radius: 6px;
+  padding: 0.2rem 0.6rem;
+}
+
+.live-transcript-container {
+  display: none;
+}
+
+.live-transcript-container.active {
+  display: block;
+  font-size: 0.9rem;
+  color: white;
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  padding: 10px;
+  max-width: 70%;
+  height: 40px;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+
+.live-transcript{
+  display: none;
+}
+
+.live-transcript.active{
+  display: block;
+  margin-top: 10px;
+  max-width: 720px; /* requirement #2: constrain width */
+  width: 100%;
+}
+
+.live-transcript-inner{
+  max-height: 160px; /* scrollable height */
+  overflow: auto; /* requirement #1: scroll when content overflows */
+  padding: 10px;
+  background-color: #3f3f3f; /* keep existing color style */
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.45;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  padding-right: 12px; /* avoid text under scrollbar */
+}
+
+/* WebKit scrollbar styling (make it look nice and subtle) */
+.live-transcript-inner::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.live-transcript-inner::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 8px;
+}
+.live-transcript-inner::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(11,92,255,0.12), rgba(124,77,255,0.10));
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.live-transcript-inner::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(11,92,255,0.22), rgba(124,77,255,0.18));
+}
+
+/* Firefox */
+.live-transcript-inner {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(11,92,255,0.16) transparent;
+}
+
+/* subtle top mask when hovering to indicate more content */
+.live-transcript-inner::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 18px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .18s ease;
+}
+.live-transcript-inner:hover::before,
+.live-transcript-inner:focus-within::before {
+  opacity: 1;
+}
+
+/* keep muted placeholder consistent */
+.live-transcript .muted {
+  color: #6b7280;
+  font-style: italic;
+  margin: 0;
+}

@@ -1,0 +1,242 @@
+.recording-player {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  background: #fafafa;
+  margin: 10px 0;
+  width: 100%;
+  max-width: 400px;
+}
+
+.recording-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.play-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.play-btn:hover {
+  background: #0056b3;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: #ddd;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: #007bff;
+  transition: width 0.1s linear;
+}
+
+.player-transcript{
+    color: black;
+}
+
+.rp-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #e6e6e9;
+  background: linear-gradient(180deg,#fff,#fafbfc);
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(22,27,34,0.04);
+  max-width: 720px;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.rp-main { display: flex; gap: 12px; align-items: center; }
+
+.rp-play {
+  width: 40px;
+  height: 40px;
+  border-radius: 16px;
+  background: #0b5cff;
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.rp-play:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(11,92,255,0.18); }
+.rp-play.playing { background: #ff36b2; }
+
+.rp-meta { flex: 1; min-width: 0; }
+
+.rp-row { display:flex; justify-content:space-between; align-items:center; gap:8px; color:#222; }
+.rp-title { font-size: 14px; }
+.rp-time { font-size: 12px; color:#666; display:flex; gap:6px; align-items:center; }
+
+.rp-progress {
+  height: 10px;
+  background: #f0f2f5;
+  border-radius: 999px;
+  margin: 8px 0;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.rp-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg,#0b5cff,#ff36b2);
+  border-radius: 999px;
+  transition: width 0.12s ease;
+}
+
+.rp-controls-row { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+
+.rp-duration { font-size: 13px; color:#333; display:flex; gap:8px; align-items:center; }
+.rp-divider { color:#999; }
+
+.rp-actions { display:flex; gap:8px; }
+.rp-transcript-toggle,
+.rp-copy {
+  background: transparent;
+  border: 1px solid #e6e9ee;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #374151;
+  display: inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.rp-transcript-toggle.open { background:#ff36b2; color: white;}
+
+.rp-transcript { max-height: 0; overflow: hidden; transition: max-height .2s ease, opacity .18s ease; opacity:0; }
+.rp-transcript.visible { max-height: 240px; opacity:1; }
+
+.rp-transcript-inner {
+  border-top: 1px dashed rgba(15,23,36,0.04);
+  padding-top: 12px;
+  color: #0f1724;
+  font-size: 14px;
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.5;
+  max-height: 200px;
+  overflow: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 8px;
+  overscroll-behavior: contain;
+}
+
+/* WebKit browsers (Chrome, Edge, Opera, Safari) */
+.rp-transcript-inner::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.rp-transcript-inner::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 8px;
+}
+.rp-transcript-inner::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(11,92,255,0.18), rgba(124,77,255,0.18));
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.rp-transcript-inner::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(11,92,255,0.28), rgba(124,77,255,0.28));
+}
+
+/* Firefox */
+.rp-transcript-inner {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(11,92,255,0.24) transparent;
+}
+
+/* small visual cue when hovering the transcript area */
+.rp-transcript-inner:hover {
+  box-shadow: inset 0 0 0 1px rgba(11,92,255,0.03);
+}
+
+/* Ensure play / action buttons center icons even when inline styles exist */
+.rp-play {
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  width: 42px !important;
+  height: 42px !important;
+  line-height: 1 !important;
+  border-radius: 999px;
+}
+
+/* Small action buttons */
+.rp-transcript-toggle,
+.rp-copy {
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 1 !important;
+  border-radius: 8px;
+}
+
+/* Force SVG/icon sizing so they sit visually centered */
+.rp-play svg,
+.rp-transcript-toggle svg,
+.rp-copy svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+  
+/* Optional: tweak icon vertical alignment fallback */
+.rp-play > svg,
+.rp-transcript-toggle > svg,
+.rp-copy > svg {
+  vertical-align: middle;
+}
+
+/* Delete button - match existing action button style but with subtle destructive color on hover */
+.rp-delete {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  line-height: 1;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid #e6e9ee;
+  cursor: pointer;
+  color: #374151;
+  transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+
+.rp-delete:hover {
+  background: #fff5f6;
+  border-color: #ffd3d8;
+  color: #c0392b;
+}
+
+.rp-delete svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
