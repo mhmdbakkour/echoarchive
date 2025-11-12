@@ -1,14 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.svg";
-import '../styles/navBar.css';
+import "../styles/navBar.css";
 
 function NavBar() {
   return (
     <nav className="navigation">
-      <img src={logo} className="nav-logo"></img>
-      <h2>Echo Archive</h2>
-      <div className="vertical-divider"></div>
+      <div className="nav-title">
+        <img src={logo} className="nav-logo"></img>
+        <div className="nav-app-name">Echo Archive</div>
+      </div>
       <div className="nav-links">
         <Link to={"/"}>Dashboard</Link>
         <Link to={"/record"}>Record</Link>

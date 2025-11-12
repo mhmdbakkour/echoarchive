@@ -262,8 +262,3 @@
 .rp-sentiment-mini.negative:hover { background: #ef4444; }
 .rp-sentiment-mini.neutral:hover { background: #94a3b8; } 
 .rp-sentiment-mini.unknown:hover { background: rgba(99,102,241,0.24); }
-
-/* keep layout tight on small screens */
-@media (max-width: 640px) {
-  .rp-sentiment-mini { width: 24px; height: 24px; font-size: 14px; margin-left: 8px; }
-}

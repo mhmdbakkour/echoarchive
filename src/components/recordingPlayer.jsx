@@ -131,7 +131,7 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
   const sentiment = recording?.sentiment || null;
   // simple, robust sentiment values for the compact emoji badge + tooltip
   const sentimentEmoji = (() => {
-    if (!sentiment) return "❔";
+    if (!sentiment || recording.transcript == "") return "❔";
     const lbl = String(sentiment.label || "").toLowerCase();
     const score = Number.isFinite(sentiment.score) ? sentiment.score : 0;
     if (lbl === "positive") return score > 10 ? "🤩" : "😊";
