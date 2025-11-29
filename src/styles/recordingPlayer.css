@@ -224,8 +224,7 @@
   color: #0b5cff;
 }
 
-/* Delete button - match existing action button style but with subtle destructive color on hover */
-.rp-delete, .rp-save {
+.rp-delete, .rp-save, .rp-export {
   display: grid;
   place-items: center;
   padding: 0;
@@ -240,7 +239,7 @@
   transition: background .12s ease, border-color .12s ease, color .12s ease;
 }
 
-.rp-save:hover {
+.rp-save:hover, .rp-export:hover {
   background: #f0fdf4;
   border-color: #bbf7d0;
   color: #16a34a;

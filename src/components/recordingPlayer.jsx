@@ -7,9 +7,11 @@ import {
   FaRegCopy,
   FaTrash,
   FaFloppyDisk,
+  FaDownload
 } from "react-icons/fa6";
 import { useRecordingStore } from "../stores/recordingStore";
 import "../styles/recordingPlayer.css";
+import { useLocation } from "react-router-dom";
 
 const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
   const audioRef = useRef(null);
@@ -199,7 +201,8 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
     );
   };
 
-  if (!isCompact)
+  const location = useLocation();
+
     return (
       <div className="rp-card">
         <div className="rp-main">
@@ -276,14 +279,28 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
                   <FaRegCopy />
                 </button>
 
-                <button
+                {location.pathname === "/record" ?
+
+                (<button
                   className="rp-save"
                   onClick={handleSave}
                   title="Save recording"
                   aria-label="Save recording"
                 >
                   <FaFloppyDisk />
-                </button>
+                </button>)
+
+                :
+
+                (<button
+                  className="rp-export"
+                  title="Export recording"
+                  aria-label="Export recording"
+                >
+                  <FaDownload />
+                </button>)
+                }
+
 
                 <button
                   className="rp-delete"

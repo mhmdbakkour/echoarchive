@@ -1,4 +1,3 @@
-import React from "react";
 import RecordingPlayer from "./recordingPlayer";
 import { useRecordingStore } from "../stores/recordingStore";
 import "../styles/recordingList.css";
