@@ -123,7 +123,6 @@
   align-items:center;
   gap:6px;
 }
-.rp-transcript-toggle.open { background:#ff36b2; color: white;}
 
 .rp-transcript { max-height: 0; overflow: hidden; transition: max-height .2s ease, opacity .18s ease; opacity:0; }
 .rp-transcript.visible { max-height: 240px; opacity:1; }
@@ -213,8 +212,20 @@
   vertical-align: middle;
 }
 
+.rp-transcript-toggle.open { background:#ff36b2; color: white;}
+
+.rp-transcript-toggle:hover{
+  background: #ffebf5;
+  color: #ff36b2;
+}
+
+.rp-copy:hover {
+  background: #f0f5ff;
+  color: #0b5cff;
+}
+
 /* Delete button - match existing action button style but with subtle destructive color on hover */
-.rp-delete {
+.rp-delete, .rp-save {
   display: grid;
   place-items: center;
   padding: 0;
@@ -227,6 +238,12 @@
   cursor: pointer;
   color: #374151;
   transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+
+.rp-save:hover {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #16a34a;
 }
 
 .rp-delete:hover {

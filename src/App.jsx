@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import NavBar from "./components/navBar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Record from "./pages/Record";
 import Archive from "./pages/Archive";
+import { loadRecordingsFromIndexedDB } from "./init/loadRecordings";
 
 function App() {
+
+  useEffect(() => {
+    loadRecordingsFromIndexedDB();
+  }, []);
+
   return (
     <div className="App">
       <BrowserRouter>

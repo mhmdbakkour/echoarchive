@@ -6,6 +6,7 @@ import {
   FaScroll,
   FaRegCopy,
   FaTrash,
+  FaFloppyDisk,
 } from "react-icons/fa6";
 import { useRecordingStore } from "../stores/recordingStore";
 import "../styles/recordingPlayer.css";
@@ -123,6 +124,7 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
     const t = recording?.transcript || "";
     try {
       await navigator.clipboard.writeText(t);
+      alert("Transcript copied to clipboard.");
     } catch (e) {
       console.warn("Copy failed", e);
     }
@@ -142,8 +144,18 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
     ? `${sentiment.label} (${sentiment.score})`
     : "No sentiment";
 
-  // try to use store removeRecording if caller doesn't provide onDelete
+  
   const removeRecording = useRecordingStore((s) => s.removeRecording);
+  const saveRecording = useRecordingStore((s) => s.saveRecording);
+
+  async function handleSave() {
+    await saveRecording(recording.id).then(() => {
+      alert("Recording saved to IndexedDB.");
+    }).catch((error) => {
+      console.error("Error saving recording:", error);
+      alert("Failed to save recording: " + error.message);
+    });
+  }
 
   const handleDelete = () => {
     if (!recording) return;
@@ -237,7 +249,9 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
 
               <div className="rp-actions">
                 <span
-                  className={`rp-sentiment-mini ${sentiment.label.toLowerCase() || ""}`}
+                  className={`rp-sentiment-mini ${
+                    sentiment.label.toLowerCase() || ""
+                  }`}
                   title={sentimentTitle}
                   aria-hidden="true"
                 >
@@ -260,6 +274,15 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
                   title="Copy transcript"
                 >
                   <FaRegCopy />
+                </button>
+
+                <button
+                  className="rp-save"
+                  onClick={handleSave}
+                  title="Save recording"
+                  aria-label="Save recording"
+                >
+                  <FaFloppyDisk />
                 </button>
 
                 <button
