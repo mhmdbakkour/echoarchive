@@ -34,7 +34,9 @@
   max-width: 100%;
   padding: 8px 10px;
   border-radius: 10px;
-  border: 1px solid rgba(16,24,40,0.06);
+  border: 1px solid var(--card-border);
+  background-color: var(--card);
+  color: var(--card-text);
   font-size: 14px;
   outline: none;
   transition: box-shadow .12s ease, border-color .12s ease;
@@ -51,7 +53,9 @@
 .ub-sort select {
   padding: 8px 12px;
   border-radius: 10px;
-  border: 1px solid rgba(16,24,40,0.06);
+  border: 1px solid var(--card-border);
+  background-color: var(--card);
+  color: var(--card-text);
   font-size: 14px;
 }
 
