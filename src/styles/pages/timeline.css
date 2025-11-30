@@ -1,0 +1,87 @@
+.timeline-page {
+    box-sizing: border-box;
+    padding: 20px;
+    padding-top: calc(var(--navbar-height, 64px) + 20px);
+    scroll-padding-top: calc(var(--navbar-height, 64px) + 8px);
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.timeline-header {
+    position: relative;
+    z-index: 1;
+}
+
+.timeline-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text); /* match dark theme text color */
+}
+
+/* charts container */
+.timeline-charts {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* top row: full width sentiment timeline */
+.timeline-top {
+    width: 100%;
+}
+
+/* lower row: two graphs that share space */
+.timeline-lower {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* each chart column should flex and allow children to shrink */
+.chart-col {
+    flex: 1 1 0%;
+    min-width: 0;
+    display: block;
+}
+
+/* desktop / large screens: sentiment on top, two charts side-by-side below and equal height */
+@media (min-width: 880px) {
+    .timeline-charts { gap: 20px; }
+
+    .timeline-lower {
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .chart-col {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .chart-col > * {
+        flex: 1 1 0%;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chart-col .dvs-wrapper,
+    .chart-col .mg-wrapper,
+    .chart-col .st-wrapper {
+        height: 100%;
+    }
+}
+
+/* small tweaks for very small screens */
+@media (max-width: 480px) {
+    .timeline-page { padding: 12px; padding-top: calc(var(--navbar-height, 56px) + 12px); }
+    .timeline-header h1 { font-size: 1.25rem; }
+    .timeline-charts { gap: 12px; }
+    .timeline-lower { gap: 12px; }
+}

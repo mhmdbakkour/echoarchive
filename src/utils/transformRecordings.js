@@ -3,6 +3,6 @@ export function transformRecordings(recordings) {
     id: rec.id,
     date: new Date(rec.createdAt),
     score: rec.sentiment?.score ?? 0,
-    duration: rec.duration,
+    duration: rec.audio.duration ?? 0,
   }));
 }

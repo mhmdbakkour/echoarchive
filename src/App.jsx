@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import "./styles/global.css";
 import NavBar from "./components/navBar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Record from "./pages/Record";
 import Archive from "./pages/Archive";
+import Timeline from "./pages/Timeline";
 import { loadRecordingsFromIndexedDB } from "./init/loadRecordings";
+
 
 function App() {
 
@@ -21,6 +24,7 @@ function App() {
             <Route path="/" element={<Home />}></Route>
             <Route path="/record" element={<Record />}></Route>
             <Route path="/archive" element={<Archive />}></Route>
+            <Route path="/timeline" element={<Timeline />}></Route>
           </Routes>
       </BrowserRouter>
     </div>

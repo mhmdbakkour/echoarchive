@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Sentiment from "sentiment";
 import { FaMicrophone, FaMicrophoneSlash, FaCirclePause, FaCirclePlay} from "react-icons/fa6";
 import { useRecordingStore } from "../stores/recordingStore";
-import { Recording } from "../utils/Recording";
+import { Recording } from "../models/Recording";
 import "../styles/audioRecorder.css";
 
 const AudioRecorder = () => {

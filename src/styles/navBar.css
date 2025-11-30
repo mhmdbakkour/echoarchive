@@ -1,3 +1,41 @@
+:root {
+  /* adjust this value to match your navbar's visual height */
+  --navbar-height: 64px;
+  /* keep in sync with global */
+  --nav-bg-gradient: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  --nav-bg-opaque: rgba(7,18,38,0.8);
+  --nav-border: rgba(255,255,255,0.03);
+}
+
+.navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 1000;
+
+  /* match app background: subtle dark layer over page gradient for readability */
+  background: linear-gradient(180deg, rgba(4,16,33,0.88), rgba(7,18,38,0.84));
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--nav-border);
+  color: inherit;
+}
+
+/* keep your existing rules, just ensure height / alignment */
+.nav-title { display:flex; align-items:center; gap:10px; height:100%; }
+.nav-logo { height: 32px; }
+.nav-links { display:flex; gap:12px; align-items:center; height:100%; }
+
+/* responsive: reduce height on small screens if desired */
+@media (max-width: 640px) {
+  :root { --navbar-height: 56px; }
+}
+
 .navigation {
   display: flex;
   position: absolute;

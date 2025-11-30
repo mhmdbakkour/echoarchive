@@ -1,0 +1,76 @@
+.dvs-wrapper {
+  width: 100%;
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border: 1px solid rgba(16,24,40,0.04);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 8px 24px rgba(11,92,255,0.03);
+  box-sizing: border-box;
+}
+
+.dvs-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.dvs-title {
+  font-weight: 600;
+  color: #0f1724;
+  font-size: 15px;
+}
+
+.dvs-controls {
+  display: inline-flex;
+  gap: 8px;
+  background: rgba(15,23,36,0.02);
+  padding: 4px;
+  border-radius: 999px;
+}
+
+.dvs-btn {
+  background: transparent;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #475569;
+  cursor: pointer;
+  transition: transform .08s ease, background .12s ease, color .12s ease;
+}
+
+.dvs-btn:hover { transform: translateY(-2px); color: #0b5cff; }
+
+.dvs-btn.active {
+  background: linear-gradient(90deg,#0b5cff,#7c4dff);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(11,92,255,0.03);
+}
+
+.dvs-chart {
+  width: 100%;
+  height: 360px;
+  min-height: 260px;
+}
+
+.dvs-wrapper .recharts-surface {
+  background: transparent;
+}
+
+.dvs-wrapper .recharts-cartesian-grid line {
+  stroke: rgba(11,92,255,0.04);
+}
+
+.dvs-wrapper .recharts-tooltip-wrapper .recharts-default-tooltip {
+  border-radius: 8px;
+}
+
+@media (max-width: 640px) {
+  .dvs-wrapper { padding: 8px; }
+  .dvs-title { font-size: 14px; }
+  .dvs-chart { height: 320px; }
+  .dvs-controls { width: 100%; justify-content: space-between; }
+  .dvs-btn { flex: 1 1 auto; text-align: center; padding: 8px 6px; }
+}

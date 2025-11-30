@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import RecordingPlayer from "../components/recordingPlayer";
 import { useRecordingStore } from "../stores/recordingStore";
-import "../styles/archive.css";
+import "../styles/pages/archive.css";
 import UtilityBar from "../components/UtilityBar";
 import "../styles/utilityBar.css";
 

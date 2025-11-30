@@ -11,7 +11,7 @@ function NavBar() {
         <div className="nav-app-name">Echo Archive</div>
       </div>
       <div className="nav-links">
-        <Link to={"/"}>Dashboard</Link>
+        <Link to={"/"}>Home</Link>
         <Link to={"/record"}>Record</Link>
         <Link to={"/archive"}>Archive</Link>
         <Link to={"/timeline"}>Timeline</Link>
