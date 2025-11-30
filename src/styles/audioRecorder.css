@@ -10,6 +10,7 @@
 .toggle-recording-button {
   border: none;
   border-radius: 50%;
+  margin-bottom: 10px;
   width: 60px;
   height: 60px;
   cursor: pointer;
@@ -62,7 +63,7 @@
 .live-transcript{
   display: block;
   margin-top: 10px;
-  max-width: 720px; /* requirement #2: constrain width */
+  max-width: 720px;
   width: 100%;
 }
 
@@ -71,20 +72,19 @@
 }
 
 .live-transcript-inner{
-  max-height: 160px; /* scrollable height */
-  overflow: auto; /* requirement #1: scroll when content overflows */
+  max-height: 160px;
+  overflow: auto;
   padding: 10px;
-  background-color: #3f3f3f; /* keep existing color style */
+  background-color: #3f3f3f;
   border-radius: 8px;
   font-size: 14px;
   line-height: 1.45;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   position: relative;
-  padding-right: 12px; /* avoid text under scrollbar */
+  padding-right: 12px;
 }
 
-/* WebKit scrollbar styling (make it look nice and subtle) */
 .live-transcript-inner::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -126,14 +126,12 @@
   opacity: 1;
 }
 
-/* keep muted placeholder consistent */
 .live-transcript .muted {
   color: #6b7280;
   font-style: italic;
   margin: 0;
 }
 
-/* Sentiment badge near timer */
 .recording-sentiment {
   display: inline-flex;
   align-items: center;
@@ -148,7 +146,6 @@
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Emoji sizing and spacing */
 .recording-sentiment .sentiment-emoji {
   font-size: 18px;
   line-height: 1;
@@ -162,27 +159,23 @@
   padding: 2px;
 }
 
-/* Label styling (keeps same color scheme but smaller text) */
 .recording-sentiment .sentiment-label {
   font-size: 12px;
   font-weight: 600;
   color: inherit;
 }
 
-/* color variants */
 .recording-sentiment.positive { background: linear-gradient(90deg,#16a34a,#4ade80); color: #07220a; }
 .recording-sentiment.neutral { background: linear-gradient(90deg,#94a3b8,#c7d2fe); color: #071245; }
 .recording-sentiment.negative { background: linear-gradient(90deg,#ef4444,#fb7185); color: #3b0505; }
 .recording-sentiment.unknown { background: rgba(99,102,241,0.24); color: #111827; color: #fff}
 
-/* responsive / layout tweaks */
 @media (max-width: 640px) {
   .recording-sentiment { display: inline-flex; margin-left: 0; margin-top: 8px; }
   .recording-sentiment .sentiment-emoji { font-size: 16px; }
   .recording-sentiment .sentiment-label { font-size: 12px; }
 }
 
-/* Make sentiment emoji sit on its own white circle so it never blends with the badge background */
 .recording-sentiment .sentiment-emoji,
 .sentiment-emoji {
   display: inline-grid;
@@ -199,7 +192,6 @@
   line-height: 1;
 }
 
-/* ensure emoji glyph centers and scales nicely */
 .recording-sentiment .sentiment-emoji > * {
   display: block;
   width: 100%;

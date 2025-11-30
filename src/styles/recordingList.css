@@ -6,7 +6,6 @@
   --rl-shadow: 0 10px 30px rgba(11,92,255,0.05);
 }
 
-/* list container */
 .rl-list {
   display: flex;
   flex-direction: column;
@@ -18,7 +17,6 @@
   max-height: 50vh;
 }
 
-/* each recording row / card */
 .rl-item {
   display: flex;
   gap: 12px;

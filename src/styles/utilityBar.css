@@ -8,8 +8,6 @@
   max-width: 1280px;
   box-sizing: border-box;
 }
-
-/* left area: search + sort */
 .ub-left {
   display: flex;
   gap: 10px;
@@ -18,7 +16,6 @@
   min-width: 0;
 }
 
-/* make search take remaining space inside .ub-left */
 .ub-left {
   display: flex;
   gap: 10px;
@@ -27,14 +24,13 @@
   min-width: 0;
 }
 
-/* new: let the search box grow to fill ub-left */
 .ub-search {
   flex: 1 1 auto;
-  min-width: 0; /* allow input to shrink on small screens */
+  min-width: 0; 
 }
 
 .ub-search input {
-  width: 100%; /* fill the flexible container */
+  width: 100%; 
   max-width: 100%;
   padding: 8px 10px;
   border-radius: 10px;
@@ -48,9 +44,8 @@
   border-color: rgba(11,92,255,0.16);
 }
 
-/* sort select */
 .ub-sort {
-  flex: 0 0 auto; /* keep sort select compact */
+  flex: 0 0 auto; 
 }
 
 .ub-sort select {
@@ -60,7 +55,6 @@
   font-size: 14px;
 }
 
-/* right area: stats + actions */
 .ub-right {
   display: flex;
   gap: 8px;
@@ -74,7 +68,6 @@
   font-size: 13px;
 }
 
-/* buttons */
 .ub-btn {
   padding: 8px 10px;
   border-radius: 10px;
@@ -94,7 +87,6 @@
 }
 .ub-btn.primary:hover { transform: translateY(-2px) scale(1.02); }
 
-/* responsive tweaks */
 @media (max-width: 880px) {
   .utility-bar { flex-direction: column; align-items: stretch; gap: 12px; }
   .ub-left { flex-direction: column; align-items: stretch; gap: 8px; }

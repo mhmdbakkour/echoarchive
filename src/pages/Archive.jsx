@@ -10,7 +10,7 @@ const Archive = () => {
   const removeRecording = useRecordingStore((s) => s.removeRecording);
 
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState("newest"); // newest | oldest
+  const [sort, setSort] = useState("newest");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

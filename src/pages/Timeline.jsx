@@ -13,10 +13,7 @@ export default function Timeline() {
 
   return (
     <div className="timeline-page">
-      <header className="timeline-header">
-        <h1>Your timeline</h1>
-      </header>
-
+      <h1>Your timeline</h1>
       <div className="timeline-charts">
         <div className="timeline-top">
           <SentimentTimeline data={data} />

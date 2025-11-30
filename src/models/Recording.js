@@ -6,7 +6,7 @@ export class Recording {
     this.transcript = transcript;
     this.sentiment = sentiment;
     this.audio = audio;
-    this.duration = duration; // seconds (number)
+    this.duration = duration;
     this.createdAt = Date.now();
   }
 
@@ -15,16 +15,13 @@ export class Recording {
     const audio = new Audio(url);
     audio.preload = 'metadata';
 
-    // Wait for metadata to load (gives a first shot at duration)
     await new Promise((resolve, reject) => {
       audio.onloadedmetadata = () => resolve();
       audio.onerror = reject;
     });
-
-    // Try element duration first
+    
     let duration = audio.duration;
 
-    // If it's not reliable, decode audio buffer to get exact duration
     if (!isFinite(duration) || isNaN(duration) || duration === 0) {
       try {
         const arrayBuffer = await blob.arrayBuffer();

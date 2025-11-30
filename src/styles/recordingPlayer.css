@@ -6,6 +6,7 @@
   margin: 10px 0;
   width: 100%;
   max-width: 400px;
+  box-sizing: border-box;
 }
 
 .recording-info {
@@ -20,6 +21,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .play-btn {
@@ -79,6 +81,11 @@
   font-size: 20px;
   cursor: pointer;
   transition: transform .12s ease, box-shadow .12s ease;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  border-radius: 999px;
 }
 .rp-play:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(11,92,255,0.18); }
 .rp-play.playing { background: #ff36b2; }
@@ -87,7 +94,29 @@
 
 .rp-row { display:flex; justify-content:space-between; align-items:center; gap:8px; color:#222; }
 .rp-title { font-size: 14px; }
-.rp-time { font-size: 12px; color:#666; display:flex; gap:6px; align-items:center; }
+.rp-time { 
+  font-size: 12px; 
+  color:#666; 
+  display:flex; 
+  gap:6px; 
+  align-items:center; 
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.rp-time > * {
+  margin: 0;
+  line-height: 1;
+}
+
+.rp-time .date,
+.rp-time .rp-date {
+  font-size: 12px;
+  color: #666;
+  opacity: 0.95;
+}
 
 .rp-progress {
   height: 10px;
@@ -97,6 +126,9 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .rp-progress-bar {
   height: 100%;
@@ -105,12 +137,12 @@
   transition: width 0.12s ease;
 }
 
-.rp-controls-row { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.rp-controls-row { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap: wrap; }
 
 .rp-duration { font-size: 13px; color:#333; display:flex; gap:8px; align-items:center; }
 .rp-divider { color:#999; }
 
-.rp-actions { display:flex; gap:8px; }
+.rp-actions { display:flex; gap:8px; flex-wrap: wrap; }
 .rp-transcript-toggle,
 .rp-copy {
   background: transparent;
@@ -122,6 +154,8 @@
   display: inline-flex;
   align-items:center;
   gap:6px;
+  min-width: 40px;
+  height: 40px;
 }
 
 .rp-transcript { max-height: 0; overflow: hidden; transition: max-height .2s ease, opacity .18s ease; opacity:0; }
@@ -141,9 +175,10 @@
   -webkit-overflow-scrolling: touch;
   padding-right: 8px;
   overscroll-behavior: contain;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
-
-/* WebKit browsers (Chrome, Edge, Opera, Safari) */
 .rp-transcript-inner::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -162,18 +197,15 @@
   background: linear-gradient(180deg, rgba(11,92,255,0.28), rgba(124,77,255,0.28));
 }
 
-/* Firefox */
 .rp-transcript-inner {
   scrollbar-width: thin;
   scrollbar-color: rgba(11,92,255,0.24) transparent;
 }
 
-/* small visual cue when hovering the transcript area */
 .rp-transcript-inner:hover {
   box-shadow: inset 0 0 0 1px rgba(11,92,255,0.03);
 }
 
-/* Ensure play / action buttons center icons even when inline styles exist */
 .rp-play {
   display: grid !important;
   place-items: center !important;
@@ -196,7 +228,6 @@
   border-radius: 8px;
 }
 
-/* Force SVG/icon sizing so they sit visually centered */
 .rp-play svg,
 .rp-transcript-toggle svg,
 .rp-copy svg {
@@ -205,7 +236,6 @@
   display: block;
 }
   
-/* Optional: tweak icon vertical alignment fallback */
 .rp-play > svg,
 .rp-transcript-toggle > svg,
 .rp-copy > svg {
@@ -257,7 +287,6 @@
   display: block;
 }
 
-/* Minimal sentiment emoji next to play (keeps UI compact) */
 .rp-sentiment-mini {
   display: inline-grid;
   place-items: center;
@@ -278,3 +307,92 @@
 .rp-sentiment-mini.negative:hover { background: #ef4444; }
 .rp-sentiment-mini.neutral:hover { background: #94a3b8; } 
 .rp-sentiment-mini.unknown:hover { background: rgba(99,102,241,0.24); }
+
+
+.recording-player {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+
+.player-controls,
+.rp-main,
+.rp-controls-row,
+.rp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rp-meta,
+.rp-row,
+.ri-left,
+.ri-right {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.rp-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.rp-progress,
+.rp-progress-bar,
+.rp-transcript-inner {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.rp-actions > * {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 760px) {
+  .rp-main {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .rp-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .ri-left { width: 100%; }
+  .ri-right { width: 100%; display: flex; justify-content: flex-start; }
+
+  .rp-progress { order: 3; }
+
+  .rp-controls-row { flex-direction: column; gap: 8px; align-items: stretch; }
+  .rp-actions { justify-content: flex-start; width: 100%; }
+}
+
+/* Very narrow / tight grid columns */
+@media (max-width: 420px) {
+  .rp-title { font-size: 13px; white-space: normal; }
+  .rp-row { gap: 4px; }
+  .rp-meta { gap: 6px; }
+
+  .rp-transcript-toggle,
+  .rp-copy,
+  .rp-delete,
+  .rp-save,
+  .rp-export {
+    min-width: 40px;
+    height: 40px;
+  }
+}
+
+.recording-player,
+.rp-card {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}

@@ -16,58 +16,75 @@ function toDate(d) {
   if (d instanceof Date) return d;
   const n = Number(d);
   if (!Number.isNaN(n)) return new Date(n);
+  console.log(d);
   return new Date(d);
 }
 
-function since(period) {
-  const now = Date.now();
-  if (period === "daily") return now - 1000 * 60 * 60 * 24;
-  if (period === "weekly") return now - 1000 * 60 * 60 * 24 * 7;
-  if (period === "monthly") return now - 1000 * 60 * 60 * 24 * 30;
-  return now - 1000 * 60 * 60 * 24 * 365;
+function periodRange(period) {
+  const now = new Date();
+  let start;
+  switch (period) {
+    case "yesterday":
+      start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+      break;
+    case "yesterweek":
+      start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+      break;
+    case "yestermonth":
+      start = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+      break;
+    case "yesteryear":
+      start = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+      break;
+    default:
+      start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+  }
+  return [start.getTime(), now.getTime()];
 }
 
 export default function DurationVsSentiment({ data = [] }) {
-  const [period, setPeriod] = useState("monthly");
+  const [period, setPeriod] = useState("yestermonth");
 
   const filtered = useMemo(() => {
-    const cutoff = since(period);
+    const [startTs, endTs] = periodRange(period);
     return (data || []).filter((d) => {
       const dt = toDate(d.date ?? d.timestamp ?? d.dt ?? d.x);
-      return dt && dt.getTime() >= cutoff;
+      const ts = dt?.getTime();
+      return ts != null && ts >= startTs && ts <= endTs;
     });
   }, [data, period]);
 
   const processed = useMemo(() => {
     return (filtered || []).map((d, i) => {
+      const dt = toDate(d.date ?? d.timestamp ?? d.dt ?? d.x);
+      const ts = dt?.getTime();
       const score = Number(d.score ?? d.value ?? 0);
       const duration = Number(d.duration ?? d.len ?? d.seconds ?? 0);
       const r = Math.min(22, Math.max(6, Math.sqrt(duration || 0) * 1.6));
       const fill = score > 1 ? "#0b5cff" : score < -1 ? "#ef4444" : "#94a3b8";
+
       return {
         ...d,
+        ts,
+        date: dt,
         score,
         duration,
         r,
         fill,
         id: d.id ?? i,
-        label: d.label ?? d.date ?? ""
+        label: d.label ?? dt?.toISOString() ?? ""
       };
     });
   }, [filtered]);
 
-  const tooltipFormatter = (value, name) => {
-    if (name === "score") return [`${value}`, "Sentiment"];
-    if (name === "duration") return [`${value}s`, "Duration"];
-    return [value, name];
-  };
+  if (!processed.length) return <div className="dvs-wrapper">No data in this range</div>;
 
   return (
     <div className="dvs-wrapper">
       <div className="dvs-toolbar">
         <div className="dvs-title">Duration vs Sentiment</div>
         <div className="dvs-controls" role="tablist" aria-label="Time range">
-          {["daily", "weekly", "monthly", "yearly"].map((p) => (
+          {["yesterday", "yesterweek", "yestermonth", "yesteryear"].map((p) => (
             <button
               key={p}
               className={`dvs-btn ${p === period ? "active" : ""}`}
@@ -83,26 +100,32 @@ export default function DurationVsSentiment({ data = [] }) {
       <div className="dvs-chart">
         <ResponsiveContainer width="100%" height={360}>
           <ScatterChart margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
-            <CartesianGrid stroke="#475569" strokeDasharray="3 6" />
+            <CartesianGrid stroke="#e6eef8" strokeDasharray="5 5" />
             <XAxis
               type="number"
               dataKey="score"
               name="Sentiment"
               domain={[-5, 5]}
               tick={{ fill: "#475569", fontSize: 12 }}
-              axisLine={false}
+              axisLine={true}
             />
             <YAxis
               type="number"
               dataKey="duration"
               name="Duration (s)"
               tick={{ fill: "#475569", fontSize: 12 }}
-              axisLine={false}
+              axisLine={true}
             />
             <Tooltip content={<ChartTooltip />} />
-            <Scatter name="Recordings" data={processed} fill="#8884d8" shape="circle">
+            <Scatter name="Recordings" data={processed} fill="#8884d8">
               {processed.map((entry) => (
-                <circle key={entry.id} cx={0} cy={0} r={entry.r} fill={entry.fill} stroke="#fff" strokeWidth={1} />
+                <circle
+                  key={entry.id}
+                  r={entry.r}
+                  fill={entry.fill}
+                  stroke="#fff"
+                  strokeWidth={1}
+                />
               ))}
             </Scatter>
           </ScatterChart>

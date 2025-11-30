@@ -1,20 +1,26 @@
+import { useState } from "react";
 import RecordingPlayer from "./recordingPlayer";
-import { useRecordingStore } from "../stores/recordingStore";
 import "../styles/recordingList.css";
 
-const RecordingList = () => {
-  const recordings = useRecordingStore((s) => s.recordings || []);
-  const removeRecording = useRecordingStore((s) => s.removeRecording);
+const initialRecordings = [
+];
 
-  if (!recordings || recordings.length === 0) {
-    return <div className="rl-empty">No recordings yet</div>;
+const RecordingList = () => {
+  const [recordings, setRecordings] = useState(initialRecordings);
+
+  const removeRecording = (id) => {
+    setRecordings((prev) => prev.filter((rec) => rec.id !== id));
+  };
+
+  if (!recordings.length) {
+    return <div className="rl-empty">No recordings... <i>yet</i></div>;
   }
 
   return (
     <div className="rl-list">
       {recordings.map((rec) => (
         <div key={rec.id} className="rl-item">
-          <RecordingPlayer recording={rec} onDelete={removeRecording} />
+          <RecordingPlayer recording={rec} onDelete={() => removeRecording(rec.id)} />
         </div>
       ))}
     </div>

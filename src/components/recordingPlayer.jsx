@@ -28,7 +28,6 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
 
     audioRef.current = audio;
 
-    // prefer stored duration, otherwise listen for metadata
     if (
       typeof recording?.duration === "number" &&
       isFinite(recording.duration)
@@ -56,8 +55,6 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
     audio.addEventListener("pause", onPause);
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("ended", handleEnded);
-
-    // ensure the element is in a ready state (harmless if already loaded)
     try {
       audio.load();
     } catch (e) {}
@@ -72,18 +69,15 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
   }, [recording]);
 
   const togglePlayback = async () => {
-    // ensure we have the current audio element
     const audio = audioRef.current || recording?.audio;
     if (!audio) return;
     audioRef.current = audio;
 
-    // use actual audio.paused so state stays in sync with the element
     if (audio.paused) {
       try {
         await audio.play();
         setIsPlaying(true);
       } catch (err) {
-        // play() can fail in some states; try a safe retry
         console.warn("Audio play() failed, retrying from 0:", err);
         try {
           audio.currentTime = 0;
@@ -133,7 +127,6 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
   };
 
   const sentiment = recording?.sentiment || null;
-  // simple, robust sentiment values for the compact emoji badge + tooltip
   const sentimentEmoji = (() => {
     if (!sentiment || recording.transcript == "") return "❔";
     const lbl = String(sentiment.label || "").toLowerCase();
@@ -164,19 +157,16 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
     const ok = window.confirm("Delete this recording? This cannot be undone.");
     if (!ok) return;
 
-    // 1) prefer explicit prop
     if (typeof onDelete === "function") {
       onDelete(recording.id);
       return;
     }
 
-    // 2) try selector from hook
     if (typeof removeRecording === "function") {
       removeRecording(recording.id);
       return;
     }
 
-    // 3) try direct store access (works for Zustand stores exported as a hook)
     try {
       const direct =
         typeof useRecordingStore.getState === "function"
@@ -187,10 +177,8 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
         return;
       }
     } catch (e) {
-      // ignore
     }
 
-    // 4) final fallback: emit an event so parent/container can handle deletion
     window.dispatchEvent(
       new CustomEvent("app:delete-recording", { detail: { id: recording.id } })
     );

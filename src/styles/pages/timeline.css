@@ -11,16 +11,11 @@
     gap: 20px;
 }
 
-.timeline-header {
-    position: relative;
-    z-index: 1;
-}
-
 .timeline-header h1 {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--text); /* match dark theme text color */
+    color: var(--text);
 }
 
 /* charts container */
@@ -30,26 +25,21 @@
     gap: 18px;
 }
 
-/* top row: full width sentiment timeline */
 .timeline-top {
     width: 100%;
 }
-
-/* lower row: two graphs that share space */
 .timeline-lower {
     display: flex;
     flex-direction: column;
     gap: 18px;
 }
 
-/* each chart column should flex and allow children to shrink */
 .chart-col {
     flex: 1 1 0%;
     min-width: 0;
     display: block;
 }
 
-/* desktop / large screens: sentiment on top, two charts side-by-side below and equal height */
 @media (min-width: 880px) {
     .timeline-charts { gap: 20px; }
 
@@ -78,7 +68,6 @@
     }
 }
 
-/* small tweaks for very small screens */
 @media (max-width: 480px) {
     .timeline-page { padding: 12px; padding-top: calc(var(--navbar-height, 56px) + 12px); }
     .timeline-header h1 { font-size: 1.25rem; }

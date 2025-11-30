@@ -15,7 +15,6 @@ function NavBar() {
         <Link to={"/record"}>Record</Link>
         <Link to={"/archive"}>Archive</Link>
         <Link to={"/timeline"}>Timeline</Link>
-        <Link to={"/profile"}>Profile</Link>
       </div>
     </nav>
   );

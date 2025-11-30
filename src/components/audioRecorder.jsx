@@ -13,20 +13,18 @@ const AudioRecorder = () => {
   const recognitionRef = useRef(null);
   const transcriptRef = useRef("");
   const [liveTranscript, setLiveTranscript] = useState("");
-  const transcriptContainerRef = useRef(null); // added: ref for scrolling
-  const autoStopTimeoutRef = useRef(null); // ensure auto-stop timer ref exists
+  const transcriptContainerRef = useRef(null);
+  const autoStopTimeoutRef = useRef(null);
   const addRecording = useRecordingStore((state) => state.addRecording);
 
-  // sentiment analyzer + live state
   const sentimentAnalyzerRef = useRef(new Sentiment());
-  const [sentiment, setSentiment] = useState(null); // { score, comparative, label } or null
+  const [sentiment, setSentiment] = useState(null);
 
-  // new: timer state and refs
+
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const timerRef = useRef(null);
   const startTsRef = useRef(0);
 
-  // helper to create SpeechRecognition (cross-browser)
   const createRecognition = () => {
     const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
     console.log("SpeechRecognition available?", !!Rec);
@@ -51,7 +49,6 @@ const AudioRecorder = () => {
       const text = (transcriptRef.current + interim).trim();
       setLiveTranscript(text);
 
-      // update live sentiment each time results arrive
       try {
         const analysis = sentimentAnalyzerRef.current.analyze(text || "");
         const label =
@@ -66,12 +63,9 @@ const AudioRecorder = () => {
       console.warn("SpeechRecognition error:", err);
     };
 
-    // Restart logic: only restart while we expect to be recording
     rec.onend = () => {
       console.log("SpeechRecognition ended");
-      // only try to restart if recording is still active
       if (isRecordingRef.current) {
-        // small delay/backoff to avoid tight loops when start() throws
         setTimeout(() => {
           try {
             if (recognitionRef.current && isRecordingRef.current) {
@@ -83,7 +77,6 @@ const AudioRecorder = () => {
               "Failed to restart SpeechRecognition, will retry shortly",
               e
             );
-            // another retry after slightly longer backoff
             setTimeout(() => {
               try {
                 recognitionRef.current &&
@@ -101,7 +94,6 @@ const AudioRecorder = () => {
     return rec;
   };
 
-  // start recognition after MediaRecorder/stream started
   const startRecognitionIfAvailable = () => {
     const rec = createRecognition();
     if (!rec) return;
@@ -126,7 +118,7 @@ const AudioRecorder = () => {
     const rec = recognitionRef.current;
     if (!rec) return;
     try {
-      rec.onend = null; // prevent restart when we intentionally stop
+      rec.onend = null;
       rec.stop();
     } catch (e) {
       console.warn("stopRecognitionIfRunning stop() threw:", e);
@@ -159,7 +151,6 @@ const AudioRecorder = () => {
       recorder.onstop = async () => {
         const blob = new Blob(audioChunks.current, { type: "audio/webm" });
         const transcript = transcriptRef.current.trim();
-        // compute final sentiment for the saved recording
         let finalSentiment = sentiment;
         try {
           const analysis = sentimentAnalyzerRef.current.analyze(transcript || "");
@@ -173,14 +164,12 @@ const AudioRecorder = () => {
         const newRecording = await Recording.fromBlob(blob, [], transcript, finalSentiment);
         addRecording(newRecording);
         stream.getTracks().forEach((t) => t.stop());
-        // leave elapsedSeconds as final value (optional: reset here)
       };
 
       recorder.start();
       setRecording(true);
       isRecordingRef.current = true;
 
-      // start timer using timestamp to avoid drift
       startTsRef.current = Date.now();
       setElapsedSeconds(0);
       if (timerRef.current) clearInterval(timerRef.current);
@@ -189,10 +178,8 @@ const AudioRecorder = () => {
         setElapsedSeconds(s);
       }, 250);
 
-      // start recognition AFTER recorder.start()
       startRecognitionIfAvailable();
 
-      // schedule auto-stop (existing logic you have elsewhere can be used)
       if (autoStopTimeoutRef?.current) clearTimeout(autoStopTimeoutRef.current);
       autoStopTimeoutRef.current = setTimeout(() => {
         if (isRecordingRef.current) stopRecording();
@@ -210,7 +197,6 @@ const AudioRecorder = () => {
     setLiveTranscript("");
     setSentiment(null);
 
-    // stop and clear timer
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
@@ -221,7 +207,6 @@ const AudioRecorder = () => {
     setMediaRecorder(null);
   };
 
-  // cleanup on unmount
   useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -237,13 +222,11 @@ const AudioRecorder = () => {
     }
   };
 
-  // auto-scroll transcript to bottom when new text arrives (respect user scroll)
   useEffect(() => {
     const el = transcriptContainerRef.current;
     if (!el) return;
     const maxScroll = el.scrollHeight - el.clientHeight;
-    if (maxScroll <= 0) return; // nothing to scroll
-    // if user scrolled up more than 40px, don't yank them down
+    if (maxScroll <= 0) return;
     const userScrolledUp = el.scrollTop < maxScroll - 40;
     if (userScrolledUp) return;
     try {
