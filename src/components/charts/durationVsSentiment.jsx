@@ -9,7 +9,7 @@ import {
   ResponsiveContainer
 } from "recharts";
 import "../../styles/charts/durationVsSentiment.css";
-import ChartTooltip from "./common/ChartTooltip";
+import ChartTooltip from "./common/chartTooltip";
 
 function toDate(d) {
   if (!d) return null;
