@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from "recharts";
 import "../../styles/charts/sentimentTimeline.css";
-import ChartTooltip from "./common/ChartTooltip";
+import ChartTooltip from "./common/chartTooltip";
 
 
 function toDate(d) {
