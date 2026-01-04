@@ -113,7 +113,6 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial
   .hero-cta{justify-content:center}
 }
 
-/* smaller screens */
 @media(max-width:640px){
   .home-hero{flex-direction:column;align-items:center}
   .hero-stats{width:100%;justify-content:center}

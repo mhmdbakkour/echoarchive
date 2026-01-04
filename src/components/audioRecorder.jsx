@@ -27,7 +27,7 @@ const AudioRecorder = () => {
 
   const createRecognition = () => {
     const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    console.log("SpeechRecognition available?", !!Rec);
+    //console.log("Speech Recognition available?", !!Rec);
     if (!Rec) return null;
     const rec = new Rec();
     rec.lang = navigator.language || "en-US";
@@ -35,7 +35,7 @@ const AudioRecorder = () => {
     rec.continuous = true;
     rec.maxAlternatives = 1;
 
-    rec.onstart = () => console.log("SpeechRecognition started");
+    rec.onstart = () => console.log("Speech Recognition started");
     rec.onresult = (e) => {
       let interim = "";
       for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -194,8 +194,8 @@ const AudioRecorder = () => {
     isRecordingRef.current = false;
     stopRecognitionIfRunning();
 
-    setLiveTranscript("");
-    setSentiment(null);
+    // setLiveTranscript("");
+    // setSentiment(null);
 
     if (timerRef.current) {
       clearInterval(timerRef.current);

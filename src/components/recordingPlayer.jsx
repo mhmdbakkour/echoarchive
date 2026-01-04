@@ -142,6 +142,7 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
   
   const removeRecording = useRecordingStore((s) => s.removeRecording);
   const saveRecording = useRecordingStore((s) => s.saveRecording);
+  const deleteRecordingFromDb = useRecordingStore((s) => s.deleteRecordingFromDb);
 
   async function handleSave() {
     await saveRecording(recording.id).then(() => {
@@ -159,11 +160,13 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
 
     if (typeof onDelete === "function") {
       onDelete(recording.id);
+      deleteRecordingFromDb(recording.id);
       return;
     }
 
     if (typeof removeRecording === "function") {
       removeRecording(recording.id);
+      deleteRecordingFromDb(recording.id);
       return;
     }
 

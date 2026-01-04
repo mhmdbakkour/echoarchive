@@ -8,7 +8,7 @@
 }
 
 .toggle-recording-button {
-  border: none;
+  border: 2px solid white;
   border-radius: 50%;
   margin-bottom: 10px;
   width: 60px;
@@ -19,6 +19,7 @@
 
 .toggle-recording-button:hover {
   background: #ff36b2;
+  border: none;
   scale: 1.1;
 }
 

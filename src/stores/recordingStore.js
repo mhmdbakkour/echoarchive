@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { recordingsDb } from "../db/recordingsDb";
+import { GiDuration } from "react-icons/gi";
 
 export const useRecordingStore = create((set, get) => ({
   recordings: [],
@@ -23,6 +24,7 @@ export const useRecordingStore = create((set, get) => ({
       createdAt: rec.createdAt,
       audioUrl: rec.audioUrl,
       transcript: rec.transcript,
+      duration: rec.duration,
       sentiment: rec.sentiment
     })
   },
