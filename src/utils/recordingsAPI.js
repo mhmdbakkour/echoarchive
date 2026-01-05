@@ -19,7 +19,7 @@ export async function fetchRecordings() {
     method: "GET",
     credentials: "same-origin",
   });
-  print(API_BASE);
+  console.log(API_BASE);
   return handleRes(res);
 }
 
