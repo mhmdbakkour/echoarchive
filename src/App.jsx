@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./App.css";
 import "./styles/global.css";
 import NavBar from "./components/navBar";
@@ -7,25 +7,25 @@ import Home from "./pages/Home";
 import Record from "./pages/Record";
 import Archive from "./pages/Archive";
 import Timeline from "./pages/Timeline";
-import { loadRecordingsFromIndexedDB } from "./init/loadRecordings";
-
+import useRecordingStore from "./stores/recordingStore";
 
 function App() {
-
   useEffect(() => {
-    loadRecordingsFromIndexedDB();
+    // initialize recordings: load from IndexedDB then fetch/merge from backend
+    const init = useRecordingStore.getState().init;
+    if (typeof init === "function") init();
   }, []);
 
   return (
     <div className="App">
       <BrowserRouter>
-        <NavBar></NavBar>
-          <Routes>
-            <Route path="/" element={<Home />}></Route>
-            <Route path="/record" element={<Record />}></Route>
-            <Route path="/archive" element={<Archive />}></Route>
-            <Route path="/timeline" element={<Timeline />}></Route>
-          </Routes>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/record" element={<Record />}></Route>
+          <Route path="/archive" element={<Archive />}></Route>
+          <Route path="/timeline" element={<Timeline />}></Route>
+        </Routes>
       </BrowserRouter>
     </div>
   );
