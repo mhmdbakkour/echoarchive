@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   FaPlay,
   FaPause,
@@ -9,11 +9,11 @@ import {
   FaFloppyDisk,
   FaDownload
 } from "react-icons/fa6";
-import { useRecordingStore } from "../stores/recordingStore";
+import useRecordingStore from "../stores/recordingStore";
 import "../styles/recordingPlayer.css";
 import { useLocation } from "react-router-dom";
 
-const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
+const RecordingPlayer = ({ recording, onDelete, onSaved, isCompact = false, isSession = false }) => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -22,7 +22,11 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
   );
   const [showTranscript, setShowTranscript] = useState(false);
 
+  const uploadAndSave = useRecordingStore((s) => s.uploadAndSave);
+  const deleteRecording = useRecordingStore((s) => s.deleteRecording);
+
   useEffect(() => {
+
     const audio = recording?.audio;
     if (!audio) return;
 
@@ -139,184 +143,170 @@ const RecordingPlayer = ({ recording, onDelete, isCompact = false }) => {
     ? `${sentiment.label} (${sentiment.score})`
     : "No sentiment";
 
-  
-  const removeRecording = useRecordingStore((s) => s.removeRecording);
-  const saveRecording = useRecordingStore((s) => s.saveRecording);
-  const deleteRecordingFromDb = useRecordingStore((s) => s.deleteRecordingFromDb);
-
-  async function handleSave() {
-    await saveRecording(recording.id).then(() => {
-      alert("Recording saved to IndexedDB.");
-    }).catch((error) => {
-      console.error("Error saving recording:", error);
-      alert("Failed to save recording: " + error.message);
-    });
-  }
-
-  const handleDelete = () => {
-    if (!recording) return;
-    const ok = window.confirm("Delete this recording? This cannot be undone.");
-    if (!ok) return;
-
-    if (typeof onDelete === "function") {
-      onDelete(recording.id);
-      deleteRecordingFromDb(recording.id);
-      return;
-    }
-
-    if (typeof removeRecording === "function") {
-      removeRecording(recording.id);
-      deleteRecordingFromDb(recording.id);
-      return;
-    }
-
+  // exposed actions that replace any direct recordingsDb.put/delete calls
+  const handleSave = async () => {
     try {
-      const direct =
-        typeof useRecordingStore.getState === "function"
-          ? useRecordingStore.getState().removeRecording
-          : undefined;
-      if (typeof direct === "function") {
-        direct(recording.id);
+      const serverResp = await uploadAndSave(recording);
+      if (serverResp) {
+        if (typeof onSaved === "function") onSaved({ ...recording, ...serverResp });
+      } else {
+        console.warn("Save returned no server response; keep session item.");
+      }
+    } catch (err) {
+      console.warn("Recording save/upload failed:", err);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      // Session-only: parent manages removal, do not call backend
+      if (isSession) {
+        if (typeof onDelete === "function") onDelete(recording.id);
         return;
       }
-    } catch (e) {
-    }
 
-    window.dispatchEvent(
-      new CustomEvent("app:delete-recording", { detail: { id: recording.id } })
-    );
-    console.warn(
-      "No delete handler available for recording id:",
-      recording.id,
-      "- dispatched app:delete-recording"
-    );
+      // Non-session (saved) recordings: delete on backend then notify parent
+      await deleteRecording(recording.id);
+
+      // let parent update UI if it wants to (optional)
+      if (typeof onDelete === "function") onDelete(recording.id);
+    } catch (err) {
+      console.warn("Recording delete failed:", err);
+    }
   };
 
   const location = useLocation();
 
-    return (
-      <div className="rp-card">
-        <div className="rp-main">
-          <button
-            className={`rp-play ${isPlaying ? "playing" : ""}`}
-            onClick={togglePlayback}
-            aria-label={isPlaying ? "Pause" : "Play"}
-          >
-            {isPlaying ? <FaPause /> : <FaPlay />}
-          </button>
+  const blobType = (() => {
+    if (!recording) return "";
+    const t = recording?.blob?.type ?? recording?.fileType ?? recording?.mime ?? "";
+    return String(t).toLowerCase();
+  })();
 
-          <div className="rp-meta">
-            <div className="rp-row">
-              <strong className="rp-title">Recording</strong>
-              <div className="rp-time">
-                <FaClock /> <span className="rp-created">{createdAt}</span>
-              </div>
-            </div>
+  return (
+    <div className={`rp-card ${isCompact ? "compact" : ""}`}>
+      <audio ref={audioRef} preload="metadata" />
+      <div className="rp-main">
+        <button
+          className={`rp-play ${isPlaying ? "playing" : ""}`}
+          onClick={togglePlayback}
+          aria-label={isPlaying ? "Pause" : "Play"}
+        >
+          {isPlaying ? <FaPause /> : <FaPlay />}
+        </button>
 
-            <div
-              className="rp-progress"
-              role="progressbar"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={Math.round(progress)}
-              onClick={seek}
-              title="Click to seek"
-            >
-              <div
-                className="rp-progress-bar"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-
-            <div className="rp-controls-row">
-              <div className="rp-duration">
-                <span className="rp-current">
-                  {audioRef.current
-                    ? formatDuration(audioRef.current.currentTime || 0)
-                    : "0:00"}
-                </span>
-                <span className="rp-divider">/</span>
-                <span className="rp-total">
-                  {duration ? formatDuration(duration) : "..."}
-                </span>
-              </div>
-
-              <div className="rp-actions">
-                <span
-                  className={`rp-sentiment-mini ${
-                    sentiment.label.toLowerCase() || ""
-                  }`}
-                  title={sentimentTitle}
-                  aria-hidden="true"
-                >
-                  {sentimentEmoji}
-                </span>
-                <button
-                  className={`rp-transcript-toggle ${
-                    showTranscript ? "open" : ""
-                  }`}
-                  onClick={() => setShowTranscript((s) => !s)}
-                  aria-expanded={showTranscript}
-                  title="Toggle transcript"
-                >
-                  <FaScroll />
-                </button>
-
-                <button
-                  className="rp-copy"
-                  onClick={copyTranscript}
-                  title="Copy transcript"
-                >
-                  <FaRegCopy />
-                </button>
-
-                {location.pathname === "/record" ?
-
-                (<button
-                  className="rp-save"
-                  onClick={handleSave}
-                  title="Save recording"
-                  aria-label="Save recording"
-                >
-                  <FaFloppyDisk />
-                </button>)
-
-                :
-
-                (<button
-                  className="rp-export"
-                  title="Export recording"
-                  aria-label="Export recording"
-                >
-                  <FaDownload />
-                </button>)
-                }
-
-
-                <button
-                  className="rp-delete"
-                  onClick={handleDelete}
-                  title="Delete recording"
-                  aria-label="Delete recording"
-                >
-                  <FaTrash />
-                </button>
-              </div>
+        <div className="rp-meta">
+          <div className="rp-row">
+            <strong className="rp-title">Recording</strong>
+            <div className="rp-time">
+              <FaClock /> <span className="rp-created">{createdAt}</span>
             </div>
           </div>
-        </div>
 
-        <div className={`rp-transcript ${showTranscript ? "visible" : ""}`}>
-          <div className="rp-transcript-inner">
-            {recording?.transcript ? (
-              <p>"{recording.transcript}"</p>
-            ) : (
-              <p className="rp-muted">No transcript available</p>
-            )}
+          <div
+            className="rp-progress"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(progress)}
+            onClick={seek}
+            title="Click to seek"
+          >
+            <div
+              className="rp-progress-bar"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          <div className="rp-controls-row">
+            <div className="rp-duration">
+              <span className="rp-current">
+                {audioRef.current
+                  ? formatDuration(audioRef.current.currentTime || 0)
+                  : "0:00"}
+              </span>
+              <span className="rp-divider">/</span>
+              <span className="rp-total">
+                {duration ? formatDuration(duration) : "..."}
+              </span>
+            </div>
+
+            <div className="rp-actions">
+              <span
+                className={`rp-sentiment-mini ${
+                  ""
+                }`}
+                title={sentimentTitle}
+                aria-hidden="true"
+              >
+                {sentimentEmoji}
+              </span>
+              <button
+                className={`rp-transcript-toggle ${
+                  showTranscript ? "open" : ""
+                }`}
+                onClick={() => setShowTranscript((s) => !s)}
+                aria-expanded={showTranscript}
+                title="Toggle transcript"
+              >
+                <FaScroll />
+              </button>
+
+              <button
+                className="rp-copy"
+                onClick={copyTranscript}
+                title="Copy transcript"
+              >
+                <FaRegCopy />
+              </button>
+
+              {location.pathname === "/record" ?
+
+              (<button
+                className="rp-save"
+                onClick={handleSave}
+                title="Save recording"
+                aria-label="Save recording"
+              >
+                <FaFloppyDisk />
+              </button>)
+
+              :
+
+              (<button
+                className="rp-export"
+                title="Export recording"
+                aria-label="Export recording"
+              >
+                <FaDownload />
+              </button>)
+              }
+
+
+              <button
+                className="rp-delete"
+                onClick={handleDelete}
+                title="Delete recording"
+                aria-label="Delete recording"
+              >
+                <FaTrash />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    );
+
+      <div className={`rp-transcript ${showTranscript ? "visible" : ""}`}>
+        <div className="rp-transcript-inner">
+          {recording?.transcript ? (
+            <p>"{recording.transcript}"</p>
+          ) : (
+            <p className="rp-muted">No transcript available</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default RecordingPlayer;

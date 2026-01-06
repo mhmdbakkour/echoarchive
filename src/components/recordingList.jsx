@@ -1,11 +1,9 @@
+import React from "react";
 import RecordingPlayer from "./recordingPlayer";
-import { useRecordingStore } from "../stores/recordingStore";
 import "../styles/recordingList.css";
 
-const RecordingList = () => {
-  const recordings = useRecordingStore((s) => s.recordings || []);
-  const removeRecording = useRecordingStore((s) => s.removeRecording);
-
+// RecordingList accepts a prop `recordings` (session-only) and `onRemove` callback
+const RecordingList = ({ recordings = [], onDelete = () => {}, onSaved = () => {} }) => {
   if (!recordings || recordings.length === 0) {
     return <div className="rl-empty">No recordings yet</div>;
   }
@@ -14,7 +12,12 @@ const RecordingList = () => {
     <div className="rl-list">
       {recordings.map((rec) => (
         <div key={rec.id} className="rl-item">
-          <RecordingPlayer recording={rec} onDelete={removeRecording} />
+          <RecordingPlayer
+            recording={rec}
+            onDelete={() => onDelete(rec.id)}
+            onSaved={() => onSaved(rec)}
+            isSession={true}
+          />
         </div>
       ))}
     </div>

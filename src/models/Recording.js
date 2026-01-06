@@ -1,6 +1,8 @@
+import { v4 as uuid4 } from 'uuid';
+
 export class Recording {
   constructor(blob, tags = [], transcript = '', audio = null, duration = 0, sentiment = null) {
-    this.id = crypto.randomUUID();
+    this.id = uuid4();
     this.blob = blob;
     this.tags = tags;
     this.transcript = transcript;

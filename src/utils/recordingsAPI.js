@@ -19,7 +19,6 @@ export async function fetchRecordings() {
     method: "GET",
     credentials: "same-origin",
   });
-  console.log(API_BASE);
   return handleRes(res);
 }
 
@@ -35,13 +34,15 @@ export async function uploadRecording(recording) {
     const filename = recording.fileName || `recording-${recording.id || Date.now()}.webm`;
     formData.append("audio", recording.blob, filename);
   }
+  
 
   if (recording.id !== undefined) formData.append("id", String(recording.id));
   if (recording.tags !== undefined) formData.append("tags", typeof recording.tags === "string" ? recording.tags : JSON.stringify(recording.tags || []));
   if (recording.transcript !== undefined) formData.append("transcript", String(recording.transcript));
   if (recording.sentiment !== undefined) formData.append("sentiment", typeof recording.sentiment === "string" ? recording.sentiment : JSON.stringify(recording.sentiment || {}));
   if (recording.duration !== undefined) formData.append("duration", String(recording.duration));
-  if (recording.createdAt !== undefined) formData.append("createdAt", String(recording.createdAt));
+  if (recording.createdAt !== undefined) formData.append("createdAt", new Date(recording.createdAt).toISOString().slice(0, 19).replace('T', ' '));
+
 
   const res = await fetch(`${API_BASE}/recordings`, {
     method: "POST",

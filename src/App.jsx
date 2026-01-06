@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import "./styles/global.css";
 import NavBar from "./components/navBar";
@@ -11,10 +11,25 @@ import useRecordingStore from "./stores/recordingStore";
 
 function App() {
   useEffect(() => {
-    // initialize recordings: load from IndexedDB then fetch/merge from backend
     const init = useRecordingStore.getState().init;
     if (typeof init === "function") init();
   }, []);
+
+  const [sessionRecordings, setSessionRecordings] = useState([]);
+
+  const handleNewRecording = (rec) => {
+    setSessionRecordings((s) => [rec, ...s]);
+  };
+
+  const handleRemoveSession = (id) => {
+    setSessionRecordings((s) => s.filter((r) => String(r.id) !== String(id)));
+  };
+
+  const handleSaved = (rec) => {
+    setSessionRecordings((s) =>
+      s.filter((r) => String(r.id) !== String(rec.id))
+    );
+  };
 
   return (
     <div className="App">
@@ -22,7 +37,17 @@ function App() {
         <NavBar />
         <Routes>
           <Route path="/" element={<Home />}></Route>
-          <Route path="/record" element={<Record />}></Route>
+          <Route
+            path="/record"
+            element={
+              <Record
+                recordings={sessionRecordings}
+                onDelete={handleRemoveSession}
+                onSaved={handleSaved}
+                handleNewRecording={handleNewRecording}
+              />
+            }
+          ></Route>
           <Route path="/archive" element={<Archive />}></Route>
           <Route path="/timeline" element={<Timeline />}></Route>
         </Routes>

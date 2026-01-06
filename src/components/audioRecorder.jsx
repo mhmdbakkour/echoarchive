@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import Sentiment from "sentiment";
-import { FaMicrophone, FaMicrophoneSlash, FaCirclePause, FaCirclePlay} from "react-icons/fa6";
-import { useRecordingStore } from "../stores/recordingStore";
+import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa6";
 import { Recording } from "../models/Recording";
 import "../styles/audioRecorder.css";
 
-const AudioRecorder = () => {
+// Accept `onRecorded` callback and do NOT call the store directly here.
+// Caller (Record page) will manage session list.
+const AudioRecorder = ({ onRecorded } = {}) => {
   const [recording, setRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const audioChunks = useRef([]);
@@ -15,11 +16,9 @@ const AudioRecorder = () => {
   const [liveTranscript, setLiveTranscript] = useState("");
   const transcriptContainerRef = useRef(null);
   const autoStopTimeoutRef = useRef(null);
-  const addRecording = useRecordingStore((state) => state.addRecording);
 
   const sentimentAnalyzerRef = useRef(new Sentiment());
   const [sentiment, setSentiment] = useState(null);
-
 
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const timerRef = useRef(null);
@@ -144,7 +143,7 @@ const AudioRecorder = () => {
       audioChunks.current = [];
       transcriptRef.current = "";
       setLiveTranscript("");
-     setSentiment(null);
+      setSentiment(null);
 
       recorder.ondataavailable = (e) => audioChunks.current.push(e.data);
 
@@ -162,7 +161,15 @@ const AudioRecorder = () => {
         }
 
         const newRecording = await Recording.fromBlob(blob, [], transcript, finalSentiment);
-        addRecording(newRecording);
+
+        // IMPORTANT: call the parent provided callback instead of saving to global store.
+        if (typeof onRecorded === "function") {
+          try {
+            onRecorded(newRecording);
+          } catch (e) {
+            console.warn("onRecorded handler threw:", e);
+          }
+        }
         stream.getTracks().forEach((t) => t.stop());
       };
 
@@ -178,6 +185,7 @@ const AudioRecorder = () => {
         setElapsedSeconds(s);
       }, 250);
 
+      // start speech recognition if available
       startRecognitionIfAvailable();
 
       if (autoStopTimeoutRef?.current) clearTimeout(autoStopTimeoutRef.current);
@@ -214,14 +222,6 @@ const AudioRecorder = () => {
     };
   }, []);
 
-  const toggleRecording = () => {
-    if (recording) {
-      stopRecording();
-    } else {
-      startRecording();
-    }
-  };
-
   useEffect(() => {
     const el = transcriptContainerRef.current;
     if (!el) return;
@@ -238,11 +238,12 @@ const AudioRecorder = () => {
 
   return (
     <div className="recorder-container">
-      <button className={`toggle-recording-button${recording ? " recording" : ""}`} onClick={toggleRecording}>
+      <button className={`toggle-recording-button${recording ? " recording" : ""}`} onClick={() => (recording ? stopRecording() : startRecording())}>
         {recording ? <FaMicrophoneSlash /> : <FaMicrophone />}
       </button>
 
       <span className={`recording-timer${recording ? " recording" : ""}`}>{formatDuration(elapsedSeconds)}</span>
+
       <span
         className={`recording-sentiment ${sentiment ? sentiment.label.toLowerCase() : "unknown"} ${recording ? "" : "hidden"}`}
         title={sentiment ? `${sentiment.label} (${sentiment.score})` : "No sentiment"}
@@ -266,11 +267,7 @@ const AudioRecorder = () => {
       </span>
 
       <div className={`live-transcript ${recording ? "" : "hidden"}`}>
-        <div
-          className="live-transcript-inner"
-          ref={transcriptContainerRef}
-          aria-live="polite"
-        >
+        <div className="live-transcript-inner" ref={transcriptContainerRef} aria-live="polite">
           {liveTranscript ? <p>{liveTranscript}</p> : <p className="muted">No live transcript</p>}
         </div>
       </div>
