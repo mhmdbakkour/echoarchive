@@ -40,7 +40,7 @@
     display: block;
 }
 
-@media (min-width: 880px) {
+@media (min-width: 990px) {
     .timeline-charts { gap: 20px; }
 
     .timeline-lower {
