@@ -274,9 +274,9 @@ const RecordingPlayer = ({ recording, onDelete, onSaved, isCompact = false, isSe
               :
 
               (<button
-                className="rp-export"
-                title="Export recording"
-                aria-label="Export recording"
+                className="rp-download"
+                title="Download recording"
+                aria-label="Download recording"
               >
                 <FaDownload />
               </button>)

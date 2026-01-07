@@ -8,7 +8,7 @@ const UtilityBar = ({
   setSort,
   count = 0,
   onClear = () => setQuery(""),
-  onExport = () => {},
+  onDownload = () => {},
 }) => {
   return (
     <div className="utility-bar">
@@ -22,16 +22,15 @@ const UtilityBar = ({
             aria-label="Search transcripts"
           />
         </label>
+      </div>
 
+      <div className="ub-right">
         <label className="ub-sort">
           <select value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort recordings">
             <option value="newest">Newest first</option>
             <option value="oldest">Oldest first</option>
           </select>
         </label>
-      </div>
-
-      <div className="ub-right">
         <div className="ub-stats">{count} result{count === 1 ? "" : "s"}</div>
 
         <button className="ub-btn" onClick={onClear} title="Clear search">
@@ -40,10 +39,10 @@ const UtilityBar = ({
 
         <button
           className="ub-btn primary"
-          onClick={onExport}
-          title="Export visible recordings"
+          onClick={onDownload}
+          title="Download visible recordings"
         >
-          Export
+          Download
         </button>
       </div>
     </div>

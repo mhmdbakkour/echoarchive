@@ -1,0 +1,75 @@
+@import "./_variables.css";
+
+/* Box model / reset */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+/* Base sizing */
+html { font-size: clamp(14px, 1.6vw, var(--base-font-size)); -webkit-text-size-adjust: 100%; }
+body { margin:0; font-family:var(--font-family-base); line-height:1.45; -webkit-font-smoothing:antialiased; }
+
+/* Container */
+.container {
+  width:100%;
+  max-width:var(--container-max-width);
+  margin:0 auto;
+  padding:0 var(--gap-md);
+  box-sizing:border-box;
+}
+
+/* Prevent horizontal overflow everywhere */
+html, body, #root, .App, .page-wrapper { min-width: 0; overflow-x:hidden; }
+
+/* Media scale */
+img, video, canvas, audio { max-width:100%; height:auto; display:block; }
+
+/* Controls */
+button, input, textarea, select { max-width:100%; font:inherit; }
+
+/* Generic cards */
+.card, .panel, .rp-card, .rl-item { width:100%; box-sizing:border-box; }
+
+/* Recording player/layout defaults */
+.rp-card { display:flex; gap:var(--gap-md); align-items:center; }
+.rp-main { flex:1; display:flex; gap:var(--gap-md); align-items:center; }
+
+/* Recorder area */
+.recorder-container { display:flex; gap:var(--gap-sm); align-items:center; justify-content:flex-start; }
+
+/* Recording list */
+.rl-list { display:flex; flex-direction:column; gap:var(--gap-sm); }
+.rl-item { width:100%; overflow:visible; }
+
+/* Nav / utility */
+.nav-bar, .utility-bar { display:flex; gap:var(--gap-sm); align-items:center; flex-wrap:wrap; }
+
+/* Charts/tables: make scrollable rather than clipped */
+.chart, .table-responsive { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+
+/* Small screens: stack heavily and reduce paddings */
+@media (max-width: var(--bp-mobile)) {
+  .container { padding: 0 var(--gap-sm); }
+
+  .rp-card { flex-direction: column; align-items: stretch; gap: var(--gap-sm); padding: var(--gap-sm); }
+  .rp-main { flex-direction: column; gap: var(--gap-sm); align-items: stretch; }
+
+  .recorder-container { flex-direction: row; gap: var(--gap-sm); padding: 0; }
+  .recording-sentiment { font-size: var(--small-font-size); }
+
+  .nav-bar { padding:0; gap:8px; justify-content:flex-start; }
+  .utility-bar { gap:8px; }
+
+  .card, .panel { padding:12px; }
+
+  .hide-on-mobile { display:none !important; }
+
+  /* Make long inline elements wrap instead of overflowing */
+  .wrap-on-mobile { white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
+}
+
+/* Tablet tweaks */
+@media (min-width: calc(var(--bp-mobile) + 1px)) and (max-width: var(--bp-tablet)) {
+  .container { padding:0 var(--gap-md); }
+  .rp-card { gap: var(--gap-md); }
+}

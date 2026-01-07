@@ -1,7 +1,7 @@
 .archive-grid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  gap: var(--gap-md);
   align-items: start;
   width: 100%;
   max-width: 1200px;

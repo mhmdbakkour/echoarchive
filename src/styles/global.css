@@ -1,14 +1,13 @@
+/* Import shared variables and responsive helpers */
+@import "./_variables.css";
+@import "./responsive.css";
+
 :root {
 
   --bg-gradient: linear-gradient(180deg,#041021 0%, #07122a 100%);
   --page-bg: #041021;
 
-  --card: #fafafa;
-  --card-text: #0f1724;
-  --card-gradient: linear-gradient(180deg,#ffffff,#fafafa);
-  --card-border: rgba(15,23,36,0.06);
-  --card-shadow: 0 6px 18px rgba(11,92,255,0.04);
-
+  
   --text: #e6eef8;
   --muted: #6b7280;
   --accent: #0b5cff;
@@ -27,4 +26,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-padding-top: 8px;
+}
+
+/* Ensure main content sits below fixed navbar */
+.page-wrapper, .App, #root {
+  padding-top: var(--navbar-height, 64px);
+  min-width: 0; /* allow flex children to shrink properly */
 }

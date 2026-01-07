@@ -77,6 +77,9 @@
   border-radius: 8px;
 }
 
+/* ensure chart container scrolls on narrow widths */
+.duration-chart-container { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+
 @media (max-width: 640px) {
   .dvs-wrapper { padding: 8px; }
   .dvs-title { font-size: 14px; }

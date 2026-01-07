@@ -67,14 +67,14 @@ export default function Home() {
                 const score = r.sentiment?.score ?? r.score ?? r.value;
                 return (
                   <li key={r.id ?? i} className="recent-item">
-                    <div className="ri-left">
-                      <div className="ri-title">{title}</div>
-                      <div className="ri-meta">
+                    <div className="ritem-left">
+                      <div className="ritem-title">{title}</div>
+                      <div className="ritem-meta">
                         <span className="muted">{d ? d.toLocaleString() : "Unknown"}</span>
                         <span className="muted">• {Math.round(dur)}s</span>
                       </div>
                     </div>
-                    <div className="ri-right">
+                    <div className="ritem-right">
                       <div className={`sentiment-badge ${score > 1 ? "pos" : score < -1 ? "neg" : "neu"}`}>
                         {score !== undefined ? Number(score).toFixed(1) : "—"}
                       </div>

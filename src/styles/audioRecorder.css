@@ -208,3 +208,6 @@
 .sentiment-emoji.hidden{
   display: none;
 }
+
+/* ENSURE: no hard min-widths or fixed widths that overflow on mobile */
+:root { /* no-op placeholder to keep file valid */ }

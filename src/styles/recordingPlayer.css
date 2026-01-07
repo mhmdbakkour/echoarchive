@@ -69,7 +69,7 @@
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
-.rp-main { display: flex; gap: 12px; align-items: center; }
+.rp-main { display: flex; gap: 12px; align-items: start; }
 
 .rp-play {
   width: 40px;
@@ -142,7 +142,7 @@
 .rp-duration { font-size: 13px; color:#333; display:flex; gap:8px; align-items:center; }
 .rp-divider { color:#999; }
 
-.rp-actions { display:flex; gap:8px; flex-wrap: wrap; }
+.rp-actions { display:flex; gap:var(--gap-sm); flex-wrap:wrap; }
 .rp-transcript-toggle,
 .rp-copy {
   background: transparent;
@@ -254,7 +254,7 @@
   color: #0b5cff;
 }
 
-.rp-delete, .rp-save, .rp-export {
+.rp-delete, .rp-save, .rp-download {
   display: grid;
   place-items: center;
   padding: 0;
@@ -269,7 +269,7 @@
   transition: background .12s ease, border-color .12s ease, color .12s ease;
 }
 
-.rp-save:hover, .rp-export:hover {
+.rp-save:hover, .rp-download:hover {
   background: #f0fdf4;
   border-color: #bbf7d0;
   color: #16a34a;
@@ -352,6 +352,11 @@
   box-sizing: border-box;
 }
 
+/* Make controls stack on mobile and avoid overflow */
+.rp-actions { display:flex; gap:var(--gap-sm); flex-wrap:wrap; }
+.rp-play { flex-shrink:0; }
+.rp-progress { min-width:0; width:100%; }
+
 @media (max-width: 760px) {
   .rp-main {
     align-items: flex-start;
@@ -384,7 +389,7 @@
   .rp-copy,
   .rp-delete,
   .rp-save,
-  .rp-export {
+  .rp-download {
     min-width: 40px;
     height: 40px;
   }

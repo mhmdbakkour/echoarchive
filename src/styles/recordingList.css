@@ -18,7 +18,9 @@
 }
 
 .rl-item {
-  display: flex;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
   gap: 12px;
   align-items: center;
   background: linear-gradient(180deg,#ffffff,#fbfdff);

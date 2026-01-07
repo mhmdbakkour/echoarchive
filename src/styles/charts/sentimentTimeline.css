@@ -80,3 +80,6 @@
   .st-controls { width: 100%; justify-content: space-between; }
   .st-btn { flex: 1 1 auto; text-align: center; padding: 8px 6px; }
 }
+
+/* timeline container safe scroll */
+.sentiment-timeline { overflow-x:auto; -webkit-overflow-scrolling:touch; }
