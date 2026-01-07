@@ -6,6 +6,8 @@
   border-radius: 12px;
   padding: 12px;
   box-sizing: border-box;
+  min-height: 410px;
+  min-width: 450px;
 
   display: flex;
   flex-direction: column;
